@@ -1,0 +1,1 @@
+pyinstaller --onefile --noconsole --add-data "logo.png;." "gera 80i20.py"

@@ -89,7 +89,8 @@ def calcular_valores():
         df['20% x QTDE'] = df['QTDE'] * df['20%']
         df['80% x QTDE'] = df['QTDE'] * df['80%']
 
-        df.to_excel(caminho_salvar, index=False)
+        df.to_excel(caminho_salvar, index=False, float_format='%.0f')
+
         
         # Função para exibir a tela "Cópia dos Valores e Sucesso"
         def exibir_copia_sucesso():
