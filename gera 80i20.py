@@ -9,6 +9,9 @@ from tkinter import filedialog, messagebox, ttk
 from PIL import Image, ImageTk
 import pyperclip
 
+# Declarando a variável global
+caminho_salvar = ''
+
 def selecionar_arquivo():
     caminho_arquivo = filedialog.askopenfilename(filetypes=[("Arquivos Excel", ".xls;.xlsx")], initialdir=os.path.expanduser("~"))
     if caminho_arquivo:
@@ -16,10 +19,17 @@ def selecionar_arquivo():
         entry_arquivo.insert(tk.END, caminho_arquivo)
 
 def selecionar_local():
+    global caminho_salvar
     caminho_salvar = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Arquivos Excel", "*.xlsx")], initialdir=os.path.expanduser("~"))
     if caminho_salvar:
         entry_local.delete(0, tk.END)
         entry_local.insert(tk.END, caminho_salvar)
+
+def abrir_arquivo():
+    if os.path.isfile(caminho_salvar):  # Verificando se o arquivo existe
+        os.startfile(caminho_salvar)
+    else:
+        messagebox.showerror("Erro", "Arquivo não encontrado. Por favor, execute a operação primeiro.")
 
 def carregar_logo():
     # Verifica se estamos executando o código compilado ou o script python
@@ -92,6 +102,10 @@ def calcular_valores():
             label_sucesso = ttk.Label(janela_copia_sucesso, text="Os valores foram calculados e as colunas criadas com sucesso!", font=("Segoe UI", 12))
             label_sucesso.pack(pady=10)
             
+            # Botão para abrir o arquivo já criado
+            button_abrir_arquivo = ttk.Button(janela_copia_sucesso, text="Abrir Arquivo", command=abrir_arquivo)
+            button_abrir_arquivo.pack(pady=5)
+
             label_copia = ttk.Label(janela_copia_sucesso, text="Selecione o valor para copiar:", font=("Segoe UI", 12))
             label_copia.pack(pady=5)
             
@@ -99,14 +113,14 @@ def calcular_valores():
             def copiar_20():
                 pyperclip.copy('|'.join(map(str, df['20%'])))
                 messagebox.showinfo("Cópia", "20% copiado com sucesso!")
-                exibir_copia_sucesso()  # Chamar a função novamente após copiar
+                janela_copia_sucesso.focus()  # Focar na janela novamente após a cópia
                 
-            # Função para copiar 80%            
+            # Função para copiar 80%
             def copiar_80():
                 pyperclip.copy('|'.join(map(str, df['80%'])))
                 messagebox.showinfo("Cópia", "80% copiado com sucesso!")
-                exibir_copia_sucesso()  # Chamar a função novamente após copiar
-            
+                janela_copia_sucesso.focus()  # Focar na janela novamente após a cópia
+
             # Botão para copiar 20%
             button_20 = ttk.Button(janela_copia_sucesso, text="Copiar 20%", command=copiar_20)
             button_20.pack(pady=5)
@@ -114,6 +128,7 @@ def calcular_valores():
             # Botão para copiar 80%
             button_80 = ttk.Button(janela_copia_sucesso, text="Copiar 80%", command=copiar_80)
             button_80.pack(pady=5)
+            
             
             # Botão para fechar a janela
             button_fechar = ttk.Button(janela_copia_sucesso, text="Fechar", command=janela_copia_sucesso.destroy)
@@ -128,6 +143,11 @@ def calcular_valores():
 
     except Exception as e:
         messagebox.showerror("Erro", "Erro ao ler ou escrever o arquivo: {}".format(str(e)))
+
+
+def abrir_codigo():
+    # Aqui você pode adicionar o código para abrir o arquivo do código sem alterar toda a estrutura
+    pass
 
 
 def center_window(window):
@@ -183,6 +203,6 @@ button_local.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
 button_calcular = ttk.Button(root, text="Gerar 80 - 20", command=calcular_valores)
 button_calcular.pack(pady=10)
 
-root.resizable(False, False)  #s Impede que a janela seja redimensionada
+root.resizable(False, False)  # Impede que a janela seja redimensionada
 
 root.mainloop()
