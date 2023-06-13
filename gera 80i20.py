@@ -128,7 +128,7 @@ def calcular_valores():
                 df['CUSTO'] = '0'     # Adicionar coluna "Custo" com valor '0'
                 df_copia = df[['CODIGO','QTDE','CUSTO', '80% x QTDE', 'DESCONTO']]
                 texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
-                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD..INI', 'w') as f:
+                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.INI', 'w') as f:
                     f.write(texto_copia)
                 messagebox.showinfo("Cópia", "80% salvo com sucesso!")
                 janela_copia_sucesso.destroy() #fecha janela
