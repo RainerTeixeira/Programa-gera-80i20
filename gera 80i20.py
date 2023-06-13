@@ -113,22 +113,22 @@ def calcular_valores():
             label_copia.pack(pady=5)
 
             def salvar_20():
-                df['DESCONTO'] = '0,00'  # Adicionar coluna "DESCONTO" com valor '0,00'
-                df['CUSTO'] = '0,00'     # Adicionar coluna "Custo" com valor '0,00'
+                df['DESCONTO'] = '0'  # Adicionar coluna "DESCONTO" com valor '0'
+                df['CUSTO'] = '0'     # Adicionar coluna "Custo" com valor '0,'
                 df_copia = df[['CODIGO', 'QTDE','CUSTO', '20% x QTDE', 'DESCONTO']]
                 texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
-                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.txt', 'w') as f:
+                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.INI', 'w') as f:
                     f.write(texto_copia)
                 messagebox.showinfo("Cópia", "20% salvo com sucesso!")
                 janela_copia_sucesso.destroy() #fecha janela
                 exibir_copia_sucesso()         #Abre janela
             
             def salvar_80():
-                df['DESCONTO'] = '0,00'  # Adicionar coluna "DESCONTO" com valor '0,00'
-                df['CUSTO'] = '0,00'     # Adicionar coluna "Custo" com valor '0,00'
+                df['DESCONTO'] = '0'  # Adicionar coluna "DESCONTO" com valor '0'
+                df['CUSTO'] = '0'     # Adicionar coluna "Custo" com valor '0'
                 df_copia = df[['CODIGO','QTDE','CUSTO', '80% x QTDE', 'DESCONTO']]
                 texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
-                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.txt', 'w') as f:
+                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD..INI', 'w') as f:
                     f.write(texto_copia)
                 messagebox.showinfo("Cópia", "80% salvo com sucesso!")
                 janela_copia_sucesso.destroy() #fecha janela
