@@ -109,30 +109,40 @@ def calcular_valores():
             button_abrir_arquivo = ttk.Button(janela_copia_sucesso, text="Abrir Arquivo", command=abrir_arquivo)
             button_abrir_arquivo.pack(pady=5)
 
-            label_copia = ttk.Label(janela_copia_sucesso, text="Selecione o valor para copiar:", font=("Segoe UI", 12))
+            label_copia = ttk.Label(janela_copia_sucesso, text="Selecione o valor para SALVAR:", font=("Segoe UI", 12))
             label_copia.pack(pady=5)
 
-            def copiar_20():
-                df['DESCONTO'] = '00,00'  # Adicionar coluna "DESCONTO" com valor '00,00'
-                df_copia = df[['CODIGO', 'QTDE', '20% x QTDE', 'DESCONTO']]
+            def salvar_20():
+                df['DESCONTO'] = '0,00'  # Adicionar coluna "DESCONTO" com valor '0,00'
+                df['CUSTO'] = '0,00'     # Adicionar coluna "Custo" com valor '0,00'
+                df_copia = df[['CODIGO', 'QTDE','CUSTO', '20% x QTDE', 'DESCONTO']]
                 texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
-                pyperclip.copy(texto_copia)
-                messagebox.showinfo("Cópia", "20% copiado com sucesso!")
-
-            def copiar_80():
-                df['DESCONTO'] = '00,00'  # Adicionar coluna "DESCONTO" com valor '00,00'
-                df_copia = df[['CODIGO', 'QTDE', '80% x QTDE', 'DESCONTO']]
+                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.txt', 'w') as f:
+                    f.write(texto_copia)
+                messagebox.showinfo("Cópia", "20% salvo com sucesso!")
+                janela_copia_sucesso.destroy() #fecha janela
+                exibir_copia_sucesso()         #Abre janela
+            
+            def salvar_80():
+                df['DESCONTO'] = '0,00'  # Adicionar coluna "DESCONTO" com valor '0,00'
+                df['CUSTO'] = '0,00'     # Adicionar coluna "Custo" com valor '0,00'
+                df_copia = df[['CODIGO','QTDE','CUSTO', '80% x QTDE', 'DESCONTO']]
                 texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
-                pyperclip.copy(texto_copia)
-                messagebox.showinfo("Cópia", "80% copiado com sucesso!")
-
+                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.txt', 'w') as f:
+                    f.write(texto_copia)
+                messagebox.showinfo("Cópia", "80% salvo com sucesso!")
+                janela_copia_sucesso.destroy() #fecha janela
+                exibir_copia_sucesso() #abre janela 
+            
             # Botão para copiar 20%
-            button_20 = ttk.Button(janela_copia_sucesso, text="Copiar 20%", command=copiar_20)
+            button_20 = ttk.Button(janela_copia_sucesso, text="Salvar 20%", command=salvar_20)
             button_20.pack(pady=5)
-
+            
+            
             # Botão para copiar 80%
-            button_80 = ttk.Button(janela_copia_sucesso, text="Copiar 80%", command=copiar_80)
+            button_80 = ttk.Button(janela_copia_sucesso, text="Salvar 80%", command=salvar_80)
             button_80.pack(pady=5)
+
 
             # Botão para fechar a janela
             button_fechar = ttk.Button(janela_copia_sucesso, text="Fechar", command=janela_copia_sucesso.destroy)
@@ -148,10 +158,6 @@ def calcular_valores():
     except Exception as e:
         messagebox.showerror("Erro", "Erro ao ler ou escrever o arquivo: {}".format(str(e)))
 
-
-def abrir_codigo():
-    # Aqui você pode adicionar o código para abrir o arquivo do código sem alterar toda a estrutura
-    pass
 
 
 def center_window(window):
