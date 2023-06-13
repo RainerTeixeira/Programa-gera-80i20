@@ -89,8 +89,8 @@ def calcular_valores():
         df['20% x QTDE'] = df['QTDE'] * df['20%']
         df['80% x QTDE'] = df['QTDE'] * df['80%']
 
-        df.to_excel(caminho_salvar, index=False, float_format='%.0f')
-
+        df.to_excel(caminho_salvar, index=False)
+        
         
         # Função para exibir a tela "Cópia dos Valores e Sucesso"
         def exibir_copia_sucesso():
@@ -110,18 +110,23 @@ def calcular_valores():
             label_copia = ttk.Label(janela_copia_sucesso, text="Selecione o valor para copiar:", font=("Segoe UI", 12))
             label_copia.pack(pady=5)
             
-            # Função para copiar 20%
             def copiar_20():
-                pyperclip.copy('|'.join(map(str, df['20%'])))
+                df['DESCONTO'] = '00,00'  # Adicionar coluna "DESCONTO" com valor '00,00'
+                df_copia = df[['CODIGO', 'QTDE', '20% x QTDE', 'DESCONTO']]
+                texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
+                pyperclip.copy(texto_copia)
                 messagebox.showinfo("Cópia", "20% copiado com sucesso!")
                 janela_copia_sucesso.focus()  # Focar na janela novamente após a cópia
-                
-            # Função para copiar 80%
+            
             def copiar_80():
-                pyperclip.copy('|'.join(map(str, df['80%'])))
+                df['DESCONTO'] = '00,00'  # Adicionar coluna "DESCONTO" com valor '00,00'
+                df_copia = df[['CODIGO', 'QTDE', '80% x QTDE', 'DESCONTO']]
+                texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
+                pyperclip.copy(texto_copia)
                 messagebox.showinfo("Cópia", "80% copiado com sucesso!")
                 janela_copia_sucesso.focus()  # Focar na janela novamente após a cópia
-
+            
+            
             # Botão para copiar 20%
             button_20 = ttk.Button(janela_copia_sucesso, text="Copiar 20%", command=copiar_20)
             button_20.pack(pady=5)
