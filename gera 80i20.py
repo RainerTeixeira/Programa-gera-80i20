@@ -3,7 +3,7 @@ import xlrd
 import os
 import openpyxl
 import ctypes
-import sys  
+import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from PIL import Image, ImageTk
@@ -42,7 +42,7 @@ def carregar_logo():
 
     if os.path.isfile(caminho_logo):
         image = Image.open(caminho_logo)
-        image.thumbnail((250, 250), Image.ANTIALIAS)
+        image.thumbnail((250, 250), Image.LANCZOS)
         logo = ImageTk.PhotoImage(image)
         logo_label.configure(image=logo)
         logo_label.image = logo
@@ -73,7 +73,7 @@ def calcular_valores():
                         sheet.cell(row=row+1, column=col+1).value = xls_sheet.cell_value(row, col)
             workbook.save(caminho_arquivo_temp)
             caminho_arquivo = caminho_arquivo_temp
-            
+
         # Ler o arquivo XLSX
         df = pd.read_excel(caminho_arquivo, engine='openpyxl')
 
@@ -89,57 +89,55 @@ def calcular_valores():
         df['20% x QTDE'] = df['QTDE'] * df['20%']
         df['80% x QTDE'] = df['QTDE'] * df['80%']
 
+        # Formatar as colunas com duas casas decimais usando vírgula como separador decimal
+        df[['20% x QTDE', '80% x QTDE']] = df[['20% x QTDE', '80% x QTDE']].applymap(lambda x: f"{x:.2f}".replace('.', ','))
+
         df.to_excel(caminho_salvar, index=False)
-        
-        
+
         # Função para exibir a tela "Cópia dos Valores e Sucesso"
         def exibir_copia_sucesso():
             janela_copia_sucesso = tk.Toplevel(root)
             janela_copia_sucesso.title("Cópia dos Valores e Sucesso")
-            
+
             # Centralizar a nova janela
             center_window(janela_copia_sucesso)
-            
+
             label_sucesso = ttk.Label(janela_copia_sucesso, text="Os valores foram calculados e as colunas criadas com sucesso!", font=("Segoe UI", 12))
             label_sucesso.pack(pady=10)
-            
+
             # Botão para abrir o arquivo já criado
             button_abrir_arquivo = ttk.Button(janela_copia_sucesso, text="Abrir Arquivo", command=abrir_arquivo)
             button_abrir_arquivo.pack(pady=5)
 
             label_copia = ttk.Label(janela_copia_sucesso, text="Selecione o valor para copiar:", font=("Segoe UI", 12))
             label_copia.pack(pady=5)
-            
+
             def copiar_20():
                 df['DESCONTO'] = '00,00'  # Adicionar coluna "DESCONTO" com valor '00,00'
                 df_copia = df[['CODIGO', 'QTDE', '20% x QTDE', 'DESCONTO']]
                 texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
                 pyperclip.copy(texto_copia)
                 messagebox.showinfo("Cópia", "20% copiado com sucesso!")
-                janela_copia_sucesso.focus()  # Focar na janela novamente após a cópia
-            
+
             def copiar_80():
                 df['DESCONTO'] = '00,00'  # Adicionar coluna "DESCONTO" com valor '00,00'
                 df_copia = df[['CODIGO', 'QTDE', '80% x QTDE', 'DESCONTO']]
                 texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
                 pyperclip.copy(texto_copia)
                 messagebox.showinfo("Cópia", "80% copiado com sucesso!")
-                janela_copia_sucesso.focus()  # Focar na janela novamente após a cópia
-            
-            
+
             # Botão para copiar 20%
             button_20 = ttk.Button(janela_copia_sucesso, text="Copiar 20%", command=copiar_20)
             button_20.pack(pady=5)
-            
+
             # Botão para copiar 80%
             button_80 = ttk.Button(janela_copia_sucesso, text="Copiar 80%", command=copiar_80)
             button_80.pack(pady=5)
-            
-            
+
             # Botão para fechar a janela
             button_fechar = ttk.Button(janela_copia_sucesso, text="Fechar", command=janela_copia_sucesso.destroy)
             button_fechar.pack(pady=10)
-        
+
         # Chamar a função para exibir a tela "Cópia dos Valores e Sucesso"
         exibir_copia_sucesso()
 
