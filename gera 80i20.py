@@ -111,29 +111,34 @@ def calcular_valores():
 
             label_copia = ttk.Label(janela_copia_sucesso, text="Selecione o valor para SALVAR:", font=("Segoe UI", 12))
             label_copia.pack(pady=5)
-
+            
             def salvar_20():
                 df['DESCONTO'] = '0'  # Adicionar coluna "DESCONTO" com valor '0'
-                df['CUSTO'] = '0'     # Adicionar coluna "Custo" com valor '0,'
-                df_copia = df[['CODIGO', 'QTDE','CUSTO', '20% x QTDE', 'DESCONTO']]
+                df['CUSTO'] = '0'     # Adicionar coluna "CUSTO" com valor '0'
+                df['20%'] = df['20%'].round(2)  # Arredondar a coluna '20%' para duas casas decimais
+                df['20%'] = df['20%'].apply(lambda x: f"{x:.2f}".replace('.', ',')) # Substituir o ponto por uma vírgula
+                df_copia = df[['CODIGO', 'QTDE', 'CUSTO', '20%', 'DESCONTO']]
                 texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
                 with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.INI', 'w') as f:
                     f.write(texto_copia)
                 messagebox.showinfo("Cópia", "20% salvo com sucesso!")
-                janela_copia_sucesso.destroy() #fecha janela
-                exibir_copia_sucesso()         #Abre janela
+                janela_copia_sucesso.destroy() # Fecha a janela
+                exibir_copia_sucesso()         # Abre a janela
             
             def salvar_80():
                 df['DESCONTO'] = '0'  # Adicionar coluna "DESCONTO" com valor '0'
-                df['CUSTO'] = '0'     # Adicionar coluna "Custo" com valor '0'
-                df_copia = df[['CODIGO','QTDE','CUSTO', '80% x QTDE', 'DESCONTO']]
+                df['CUSTO'] = '0'     # Adicionar coluna "CUSTO" com valor '0'
+                df['80%'] = df['80%'].round(2)  # Arredondar a coluna '80%' para duas casas decimais
+                df['80%'] = df['80%'].apply(lambda x: f"{x:.2f}".replace('.', ',')) # Substituir o ponto por uma vírgula
+                df_copia = df[['CODIGO', 'QTDE', 'CUSTO', '80%', 'DESCONTO']]
                 texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
                 with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.INI', 'w') as f:
                     f.write(texto_copia)
                 messagebox.showinfo("Cópia", "80% salvo com sucesso!")
-                janela_copia_sucesso.destroy() #fecha janela
-                exibir_copia_sucesso() #abre janela 
+                janela_copia_sucesso.destroy() # Fecha a janela
+                exibir_copia_sucesso()         # Abre a janela
             
+                        
             # Botão para copiar 20%
             button_20 = ttk.Button(janela_copia_sucesso, text="Salvar 20%", command=salvar_20)
             button_20.pack(pady=5)
