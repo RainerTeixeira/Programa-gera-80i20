@@ -7,7 +7,7 @@ import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from PIL import Image, ImageTk
-import pyperclip
+
 
 # Declarando a variável global
 caminho_salvar = ''
@@ -96,6 +96,11 @@ def calcular_valores():
 
         # Função para exibir a tela "Cópia dos Valores e Sucesso"
         def exibir_copia_sucesso():
+            for widget in root.winfo_children():
+                if isinstance(widget, tk.Toplevel) and widget.title() == "Cópia dos Valores e Sucesso":
+                    widget.lift()
+                    return
+
             janela_copia_sucesso = tk.Toplevel(root)
             janela_copia_sucesso.title("Cópia dos Valores e Sucesso")
 
@@ -111,43 +116,40 @@ def calcular_valores():
 
             label_copia = ttk.Label(janela_copia_sucesso, text="Selecione o valor para SALVAR:", font=("Segoe UI", 12))
             label_copia.pack(pady=5)
-            
+
+            def salvar_valores(valor):
+                df['CUSTO'] = '0'     # Adicionar coluna "CUSTO" com valor '0'
+
+                # Substituir valores "NaN" por zero
+                df[valor].fillna(0, inplace=True)
+
+                df[valor] = df[valor].round(2)  # Arredondar a coluna '20%' ou '80%' para duas casas decimais
+                df[valor] = df[valor].apply(lambda x: f"{x:.2f}".replace('.', ','))  # Substituir o ponto por uma vírgula
+
+                df_copia = df[['CODIGO', 'QTDE', 'CUSTO', valor, 'DESCONTO']]
+                texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
+
+                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.INI', 'w') as f:
+                    f.write(texto_copia)
+
+                messagebox.showinfo("Cópia", f"{valor} salvo com sucesso!")
+                exibir_copia_sucesso()
+
             def salvar_20():
-                df['DESCONTO'] = '0'  # Adicionar coluna "DESCONTO" com valor '0'
-                df['CUSTO'] = '0'     # Adicionar coluna "CUSTO" com valor '0'
-                df['20%'] = df['20%'].round(2)  # Arredondar a coluna '20%' para duas casas decimais
-                df['20%'] = df['20%'].apply(lambda x: f"{x:.2f}".replace('.', ',')) # Substituir o ponto por uma vírgula
-                df_copia = df[['CODIGO', 'QTDE', 'CUSTO', '20%', 'DESCONTO']]
-                texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
-                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.INI', 'w') as f:
-                    f.write(texto_copia)
-                messagebox.showinfo("Cópia", "20% salvo com sucesso!")
-                janela_copia_sucesso.destroy() # Fecha a janela
-                exibir_copia_sucesso()         # Abre a janela
-            
+                salvar_valores('20%')
+                button_20.config(state="disabled")  # Desabilitar o botão "Salvar 20%"
+
             def salvar_80():
-                df['DESCONTO'] = '0'  # Adicionar coluna "DESCONTO" com valor '0'
-                df['CUSTO'] = '0'     # Adicionar coluna "CUSTO" com valor '0'
-                df['80%'] = df['80%'].round(2)  # Arredondar a coluna '80%' para duas casas decimais
-                df['80%'] = df['80%'].apply(lambda x: f"{x:.2f}".replace('.', ',')) # Substituir o ponto por uma vírgula
-                df_copia = df[['CODIGO', 'QTDE', 'CUSTO', '80%', 'DESCONTO']]
-                texto_copia = '\n'.join(df_copia.apply(lambda row: '|'.join(row.values.astype(str)), axis=1))
-                with open(r'C:\ONCLICK\ARQTEMP\TEMP_PROD.INI', 'w') as f:
-                    f.write(texto_copia)
-                messagebox.showinfo("Cópia", "80% salvo com sucesso!")
-                janela_copia_sucesso.destroy() # Fecha a janela
-                exibir_copia_sucesso()         # Abre a janela
-            
-                        
+                salvar_valores('80%')
+                button_80.config(state="disabled")  # Desabilitar o botão "Salvar 80%"
+
             # Botão para copiar 20%
             button_20 = ttk.Button(janela_copia_sucesso, text="Salvar 20%", command=salvar_20)
             button_20.pack(pady=5)
-            
-            
+
             # Botão para copiar 80%
             button_80 = ttk.Button(janela_copia_sucesso, text="Salvar 80%", command=salvar_80)
             button_80.pack(pady=5)
-
 
             # Botão para fechar a janela
             button_fechar = ttk.Button(janela_copia_sucesso, text="Fechar", command=janela_copia_sucesso.destroy)
@@ -162,8 +164,6 @@ def calcular_valores():
 
     except Exception as e:
         messagebox.showerror("Erro", "Erro ao ler ou escrever o arquivo: {}".format(str(e)))
-
-
 
 def center_window(window):
     window.update_idletasks()
